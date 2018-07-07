@@ -1,1 +1,1 @@
-This is a folder for practicing real python books on web development
+This is a folder for practicing web development with flask
