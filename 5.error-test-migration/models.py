@@ -1,0 +1,48 @@
+from views import db
+import datetime
+
+
+class Task(db.Model):
+    # Task ORM
+    __tablename__ = 'tasks'
+
+    task_id = db.Column(db.Integer, primary_key=True)  # Autoincrement
+    name = db.Column(db.String, nullable=False)
+    due_date = db.Column(db.Date, nullable=False)
+    priority = db.Column(db.Integer, nullable=False)
+    posted_date = db.Column(db.Date, default=datetime.datetime.utcnow())
+    status = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __init__(self, name, due_date, priority, status, posted_date, user_id):
+        self.name = name
+        self.due_date = due_date
+        self.priority = priority
+        self.posted_date = posted_date
+        self.status = status
+        self.user_id = user_id
+
+    def __repr__(self):
+        return f'<name {self.name}>'
+
+
+class User(db.Model):
+    # Store user data
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
+    password = db.Column(db.String, nullable=False)
+    # the user is referred as 'poster' in this backref
+    tasks = db.relationship('Task', backref='poster')
+    role = db.Column(db.String, default='user')
+
+    def __init__(self, name=None, email=None, password=None, role=None):
+        self.name = name
+        self.email = email
+        self.password = password
+        self.role = role
+
+    def __repr__(self):
+        return f'<User> {self.name}'
